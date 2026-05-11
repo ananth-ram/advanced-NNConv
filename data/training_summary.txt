@@ -1,0 +1,25 @@
+
+Advanced NNConv Training Summary
+================================
+
+Total epochs:
+20
+
+Best Validation AUC:
+0.8674
+
+Final Test AUC:
+0.8730
+
+Dataset:
+386544 crystal graphs
+
+Model:
+Advanced NNConv
+
+Physics Features:
+- Atomic number nodes
+- Distance-aware edges
+- Direction-aware edges
+- Edge-conditioned convolutions
+
