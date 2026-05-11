@@ -44,7 +44,7 @@ Traditional identification methods require computationally expensive calculation
 - symmetry analysis
 - topological invariant evaluation
 
-These methods are not scalable for high-throughput screening of hundreds of thousands of materials.
+These methods are not scalable for high-throughput screening of large materials databases.
 
 Graph Neural Networks provide an alternative by learning structural and geometric representations directly from crystal structures.
 
@@ -92,14 +92,14 @@ Each node stores atomic descriptors.
 
 Minimal representation:
 
-\[
-x_i = [Z_i]
-\]
+```text
+xᵢ = [Zᵢ]
+```
 
 Where:
 
-- \(x_i\) = node feature vector
-- \(Z_i\) = atomic number
+- xᵢ = node feature vector
+- Zᵢ = atomic number
 
 This provides chemical identity information.
 
@@ -109,19 +109,19 @@ This provides chemical identity information.
 
 Neighboring atoms are connected using a distance cutoff:
 
-\[
-r_{ij} < r_{\text{cut}}
-\]
+```text
+rᵢⱼ < r_cut
+```
 
 Typical cutoff:
 
-\[
-r_{\text{cut}} = 5\ \text{Å}
-\]
+```text
+r_cut = 5 Å
+```
 
 Where:
 
-- \(r_{ij}\) = interatomic distance
+- rᵢⱼ = interatomic distance
 
 This approximates local bonding environments.
 
@@ -131,15 +131,14 @@ This approximates local bonding environments.
 
 Each edge stores geometric information:
 
-\[
-e_{ij} =
-[r_{ij}, \Delta x, \Delta y, \Delta z]
-\]
+```text
+eᵢⱼ = [rᵢⱼ, Δx, Δy, Δz]
+```
 
 Where:
 
-- \(r_{ij}\) = bond distance
-- \((\Delta x,\Delta y,\Delta z)\) = displacement vector
+- rᵢⱼ = bond distance
+- (Δx, Δy, Δz) = displacement vector
 
 These features encode:
 
@@ -154,13 +153,9 @@ These features encode:
 
 The graph representation approximates an effective tight-binding Hamiltonian:
 
-\[
-H_{\text{eff}}
-\sim
-\sum_{i,j}
-t_{ij}
-c_i^\dagger c_j
-\]
+```text
+H_eff ~ Σᵢⱼ tᵢⱼ c†ᵢ cⱼ
+```
 
 Where:
 
@@ -186,7 +181,7 @@ Crystal structures are read from large-scale JSON datasets using streaming parse
 
 Each entry is converted into a crystal structure object using:
 
-- `pymatgen`
+- pymatgen
 - atomic positions
 - lattice vectors
 - species information
@@ -197,19 +192,15 @@ Each entry is converted into a crystal structure object using:
 
 Pairwise atomic distances are computed:
 
-\[
-r_{ij}
-=
-\left\|
-\mathbf{r}_i - \mathbf{r}_j
-\right\|
-\]
+```text
+rᵢⱼ = || rᵢ − rⱼ ||
+```
 
 Edges are created if:
 
-\[
-r_{ij} < r_{\text{cut}}
-\]
+```text
+rᵢⱼ < r_cut
+```
 
 ---
 
@@ -256,7 +247,7 @@ This serves as a proxy classification target.
 
 The initial baseline model used:
 
-- `GCNConv`
+- GCNConv
 - node features only
 - connectivity-only message passing
 
@@ -296,17 +287,15 @@ The final model uses edge-conditioned graph convolutions.
 
 The NNConv operation is:
 
-\[
-m_{ij}
-=
-f(e_{ij}) \cdot x_j
-\]
+```text
+mᵢⱼ = f(eᵢⱼ) · xⱼ
+```
 
 Where:
 
-- \(x_j\) = neighboring node feature
-- \(e_{ij}\) = edge attributes
-- \(f(e_{ij})\) = dynamically generated neural filter
+- xⱼ = neighboring node feature
+- eᵢⱼ = edge attributes
+- f(eᵢⱼ) = dynamically generated neural filter
 
 Unlike standard GCNs, the convolution weights depend explicitly on edge geometry.
 
@@ -320,8 +309,7 @@ Unlike standard GCNs, the convolution weights depend explicitly on edge geometry
 
 Each convolution layer contains an MLP:
 
-```python
-edge_mlp:
+```text
 Linear → ReLU → Linear
 ```
 
@@ -343,17 +331,14 @@ The model contains:
 
 Global mean pooling aggregates atomic embeddings:
 
-\[
-h_G
-=
-\frac{1}{N}
-\sum_i h_i
-\]
+```text
+h_G = (1/N) Σᵢ hᵢ
+```
 
 Where:
 
-- \(h_i\) = node embedding
-- \(h_G\) = graph-level representation
+- hᵢ = node embedding
+- h_G = graph-level representation
 
 ---
 
@@ -368,7 +353,7 @@ Fully connected layers map graph embeddings into final predictions.
 | Parameter | Value |
 |---|---|
 | Optimizer | Adam |
-| Learning Rate | \(10^{-3}\) |
+| Learning Rate | 1e-3 |
 | Epochs | 20 |
 | Framework | PyTorch Geometric |
 | GPU | NVIDIA T4 |
@@ -380,20 +365,15 @@ Fully connected layers map graph embeddings into final predictions.
 
 Adam optimization updates parameters using:
 
-\[
-\theta_{t+1}
-=
-\theta_t
--
-\eta
-\nabla_\theta L
-\]
+```text
+θₜ₊₁ = θₜ − η ∇θ L
+```
 
 Where:
 
-- \(\theta\) = model parameters
-- \(\eta\) = learning rate
-- \(L\) = loss function
+- θ = model parameters
+- η = learning rate
+- L = loss function
 
 ---
 
@@ -561,7 +541,7 @@ Future physics-aware enhancements:
 
 Future models may directly predict:
 
-- \(Z_2\) invariants
+- Z₂ invariants
 - Chern numbers
 - Weyl semimetal phases
 - topological crystalline phases
@@ -588,14 +568,14 @@ Future models may directly predict:
 ## Graph Neural Networks for Materials
 
 ### SchNet
+
 Schütt, K. T. et al. (2018)
 
 *SchNet: A continuous-filter convolutional neural network for modeling quantum interactions.*
 
 Nature Communications 9, 1–11.
 
-DOI:
-
+DOI:  
 https://doi.org/10.1038/s41467-017-02355-0
 
 ---
@@ -608,8 +588,7 @@ Xie, T. & Grossman, J. C. (2018)
 
 Physical Review Letters 120, 145301.
 
-DOI:
-
+DOI:  
 https://doi.org/10.1103/PhysRevLett.120.145301
 
 ---
@@ -622,8 +601,7 @@ Gilmer, J. et al. (2017)
 
 ICML 2017.
 
-arXiv:
-
+arXiv:  
 https://arxiv.org/abs/1704.01212
 
 ---
@@ -636,8 +614,7 @@ Butler, K. T. et al. (2018)
 
 Nature 559, 547–555.
 
-DOI:
-
+DOI:  
 https://doi.org/10.1038/s41586-018-0337-2
 
 ---
@@ -650,8 +627,7 @@ Hasan, M. Z. & Kane, C. L. (2010)
 
 Reviews of Modern Physics 82, 3045–3067.
 
-DOI:
-
+DOI:  
 https://doi.org/10.1103/RevModPhys.82.3045
 
 ---
@@ -662,8 +638,7 @@ Qi, X.-L. & Zhang, S.-C. (2011)
 
 Reviews of Modern Physics 83, 1057–1110.
 
-DOI:
-
+DOI:  
 https://doi.org/10.1103/RevModPhys.83.1057
 
 ---
@@ -679,4 +654,3 @@ The NNConv architecture significantly outperforms baseline GCN models by incorpo
 - edge-conditioned interactions
 
 The achieved ROC-AUC (~0.87) establishes a strong foundation for future physics-informed topological materials discovery pipelines using graph-based machine learning.
-
